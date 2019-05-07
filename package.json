@@ -1,0 +1,53 @@
+{
+  "name": "@notarize/eslint-plugin-react-intl-ensure",
+  "version": "1.0.0",
+  "author": "Notarize Inc.",
+  "license": "MIT",
+  "description": "Rules for managing react intl translations",
+  "main": "lib/index.js",
+  "module": "lib/index.es.js",
+  "files": [
+    "lib"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/notarize/eslint-plugin-react-intl-ensure.git"
+  },
+  "keywords": [
+    "eslint",
+    "eslint-plugin",
+    "eslintplugin",
+    "react"
+  ],
+  "bugs": {
+    "url": "https://github.com/notarize/eslint-plugin-react-intl-ensure/issues"
+  },
+  "homepage": "https://github.com/notarize/eslint-plugin-react-intl-ensure",
+  "scripts": {
+    "build": "rollup -c",
+    "format": "prettier '**/*.{json,js,ts,tsx,md}'",
+    "lint": "eslint './**/*.ts'",
+    "start": "rollup -cw",
+    "test": "jest"
+  },
+  "peerDependencies": {
+    "eslint": "^3.0.0 || ^4.0.0 || ^5.0.0"
+  },
+  "devDependencies": {
+    "@types/eslint": "^4.16.6",
+    "@types/jest": "^24.0.12",
+    "@types/uuidv4": "^2.0.0",
+    "@typescript-eslint/eslint-plugin": "^1.7.0",
+    "@typescript-eslint/parser": "^1.7.0",
+    "eslint": "^5.16.0",
+    "jest": "^24.8.0",
+    "prettier": "^1.17.0",
+    "rollup": "^1.11.3",
+    "rollup-plugin-typescript2": "^0.21.0",
+    "ts-jest": "^24.0.2",
+    "typescript": "^3.4.5"
+  },
+  "dependencies": {
+    "uuidv4": "^4.0.0"
+  }
+}
