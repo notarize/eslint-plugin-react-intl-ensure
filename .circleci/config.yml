@@ -1,0 +1,149 @@
+version: 2.1
+
+commands:
+  attach_made_workspace:
+    description: Attach workspace generated files from another job
+    steps:
+      - attach_workspace:
+          at: /root
+
+executors:
+  default_node_env:
+    docker:
+      - image: notarize/node:10.14.0
+    working_directory: /root/eslint-plugin-react-intl-ensure
+
+jobs:
+  build_working_directory:
+    executor: default_node_env
+    steps:
+      - checkout
+
+      - restore_cache:
+          name: Restoring node_modules
+          keys:
+            - node_modules-packages-{{ checksum "yarn.lock" }}
+            - node_modules-packages
+      - run:
+          name: Installing NPM Dependencies
+          command: yarn install --frozen-lockfile
+      - save_cache:
+          name: Caching node_modules
+          key: node_modules-packages-{{ checksum "yarn.lock" }}
+          paths:
+            - node_modules
+
+      - persist_to_workspace:
+          root: /root
+          paths:
+            - eslint-plugin-react-intl-ensure
+
+  produce_built_lib:
+    executor: default_node_env
+    steps:
+      - attach_made_workspace
+      - run:
+          name: Building lib and Typechecking
+          command: yarn run build
+      - persist_to_workspace:
+          root: /root
+          paths:
+            - eslint-plugin-react-intl-ensure/lib
+
+  lint:
+    executor: default_node_env
+    steps:
+      - attach_made_workspace
+      - run:
+          name: Linting Source
+          command: yarn run lint --max-warnings 0
+
+  format:
+    executor: default_node_env
+    steps:
+      - attach_made_workspace
+      - run:
+          name: Checking Formatting
+          command: yarn run format --check
+
+  test:
+    executor: default_node_env
+    steps:
+      - attach_made_workspace
+      - run:
+          name: Linting Source Code
+          command: yarn run test --ci --maxWorkers=2
+
+  publish:
+    executor: default_node_env
+    steps:
+      - attach_made_workspace
+      - run:
+          name: Configuring NPM Token
+          command: |
+            echo "registry=https://registry.npmjs.org/" > ~/.npmrc
+            echo "//registry.npmjs.org/:_authToken=${NOTARBOT_NPM_TOKEN}" >> ~/.npmrc
+      - run:
+          name: Publishing Package
+          command: yarn publish --new-version "${CIRCLE_TAG:1}" --access public
+
+workflows:
+  version: 2
+
+  Everything:
+    jobs:
+      - build_working_directory:
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: master
+
+      - produce_built_lib:
+          requires:
+            - build_working_directory
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: master
+
+      - lint:
+          requires:
+            - build_working_directory
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: master
+
+      - format:
+          requires:
+            - build_working_directory
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: master
+
+      - test:
+          requires:
+            - build_working_directory
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: master
+
+      - publish:
+          requires:
+            - build_working_directory
+            - produce_built_lib
+            - lint
+            - format
+            - test
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: /.*/
