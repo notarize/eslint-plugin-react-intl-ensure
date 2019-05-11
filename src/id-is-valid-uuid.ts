@@ -1,4 +1,4 @@
-import { Node, BaseNode, Identifier, CallExpression, Literal } from "estree";
+import { Node, BaseNode, Identifier, CallExpression, Property, ObjectExpression } from "estree";
 import { Rule, Scope } from "eslint";
 import UUID from "uuidv4";
 
@@ -61,6 +61,12 @@ function newIdText(): string {
   return `"${UUID()}"`;
 }
 
+function messageIdProperty({ properties }: ObjectExpression): Property | undefined {
+  return properties.find(
+    (prop) => isProperty(prop) && isIdentifier(prop.key) && prop.key.name === "id",
+  );
+}
+
 const rule: Rule.RuleModule = {
   meta: {
     fixable: "code",
@@ -80,6 +86,7 @@ const rule: Rule.RuleModule = {
     ],
     messages: {
       invalidId: "Message ID '{{id}}' does not conform.",
+      missingId: "Missing ID property.",
     },
   },
   create(context) {
@@ -91,11 +98,28 @@ const rule: Rule.RuleModule = {
           : ["react-intl"],
       ),
     );
-    function report(node: Node): void {
+    function reportMissingId(node: Node): void {
+      context.report({
+        node: node as Node,
+        messageId: "missingId",
+        fix(fixer) {
+          // @ts-ignore
+          if (node.type === "JSXOpeningElement") {
+            return fixer.insertTextAfter((node as JSXOpeningElement).name, `\nid=${newIdText()}`);
+          } else if (isObjectExpression(node) && node.properties.length) {
+            return fixer.insertTextBefore(node.properties[0].key, `id: ${newIdText()},\n`);
+          } else if (isObjectExpression(node)) {
+            return fixer.replaceText(node, `{\nid: ${newIdText()},\n}`);
+          }
+          return null;
+        },
+      });
+    }
+    function reportInvalidId(node: Node): void {
       context.report({
         node,
         messageId: "invalidId",
-        data: { id: `${isLiteral(node) ? node.value : "unknown"}` },
+        data: { id: `${isLiteral(node) ? node.value : "non-literal"}` },
         fix(fixer) {
           return fixer.replaceText(node, newIdText());
         },
@@ -114,36 +138,38 @@ const rule: Rule.RuleModule = {
         if (!firstArg || !isObjectExpression(firstArg)) {
           return;
         }
-        firstArg.properties
-          .reduce(
-            (accum, property) => {
-              if (!isProperty(property) || !isObjectExpression(property.value)) {
-                return accum;
-              }
-              const idProp = property.value.properties.find(
-                (prop) => isProperty(prop) && isIdentifier(prop.key) && prop.key.name === "id",
-              );
-              return idProp && isLiteral(idProp.value) ? accum.concat([idProp.value]) : accum;
-            },
-            [] as Literal[],
-          )
-          .filter((literal) => !isValidId(literal.value))
-          .forEach(report);
+
+        const messages = firstArg.properties
+          .filter((property) => isProperty(property) && isObjectExpression(property.value))
+          .map((property) => property.value as ObjectExpression);
+
+        // Messages with IDs
+        const idProps = messages.map(messageIdProperty).filter(Boolean);
+        (idProps as Property[])
+          .filter((idProp) => !isLiteral(idProp.value) || !isValidId(idProp.value.value))
+          .map((idProp) => idProp.value)
+          .forEach(reportInvalidId);
+
+        // Messages without IDs we can just report
+        messages.filter((message) => !messageIdProperty(message)).forEach(reportMissingId);
       },
       JSXOpeningElement(node: Node) {
         const { name, attributes } = node as JSXOpeningElement;
         if (!isIntl(name.name, JSX_TAGS, context.getScope(), moduelNames)) {
           return;
         }
-        attributes.forEach(({ name, value }: JSXAttribute) => {
-          if (!name || name.type !== "JSXIdentifier" || name.name !== "id") {
-            return;
-          }
-          if (isLiteral(value) && isValidId(value.value)) {
-            return;
-          }
-          report(value);
+
+        const firstIdAttr = attributes.find(({ name }: JSXAttribute) => {
+          return Boolean(name && name.type === "JSXIdentifier" && name.name === "id");
         });
+        if (!firstIdAttr) {
+          return reportMissingId(node);
+        }
+
+        const { value } = firstIdAttr;
+        if (!isLiteral(value) || !isValidId(value.value)) {
+          return reportInvalidId(value);
+        }
       },
     };
   },
