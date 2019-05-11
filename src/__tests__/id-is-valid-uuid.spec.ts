@@ -1,7 +1,24 @@
+import UUID from "uuidv4";
+
 import IDIsValidUUID from "../id-is-valid-uuid";
 import { makeRuleTester } from "./util";
 
+interface FakeUUIDMod extends jest.Mock<string> {
+  is: (str: string) => boolean;
+  __fakeID: string;
+}
+
+jest.mock("uuidv4", () => {
+  const realModule = jest.requireActual("uuidv4");
+  const fakeId = "531b7e94-5447-4f1e-8617-bc61a658ddd5";
+  const fake = jest.fn(() => fakeId) as FakeUUIDMod;
+  fake.is = realModule.is;
+  fake.__fakeID = fakeId;
+  return fake;
+});
+
 const tester = makeRuleTester();
+const fakeId = ((UUID as unknown) as FakeUUIDMod).__fakeID;
 
 tester.run("id-is-valid-uuid", IDIsValidUUID, {
   valid: [
@@ -87,6 +104,19 @@ tester.run("id-is-valid-uuid", IDIsValidUUID, {
           },
         });
       `,
+      output: `
+        import { FormattedMessage, defineMessages } from "react-intl";
+
+        <FormattedMessage
+          id="${fakeId}"
+        />;
+
+        defineMessages({
+          one: {
+            id: "${fakeId}"
+          },
+        });
+      `,
       errors: [
         {
           message: "Message ID 'something is not quite right' does not conform.",
@@ -147,6 +177,53 @@ tester.run("id-is-valid-uuid", IDIsValidUUID, {
         {
           message: "Message ID 'something is not quite right 2' does not conform.",
           line: 11,
+        },
+      ],
+    },
+    {
+      code: `
+        import { FormattedMessage, defineMessages } from "react-intl";
+
+        <FormattedMessage
+        />
+
+        defineMessages({
+          one: {
+          },
+          two: {
+            defaultMessage: "a message!",
+          },
+        });
+      `,
+      output: `
+        import { FormattedMessage, defineMessages } from "react-intl";
+
+        <FormattedMessage
+id="${fakeId}"
+        />
+
+        defineMessages({
+          one: {
+id: "${fakeId}",
+},
+          two: {
+            id: "${fakeId}",
+defaultMessage: "a message!",
+          },
+        });
+      `,
+      errors: [
+        {
+          message: "Missing ID property.",
+          line: 4,
+        },
+        {
+          message: "Missing ID property.",
+          line: 8,
+        },
+        {
+          message: "Missing ID property.",
+          line: 10,
         },
       ],
     },

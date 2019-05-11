@@ -13,6 +13,12 @@ module.exports = {
     },
   },
   plugins: ["@typescript-eslint"],
+  overrides: [
+    {
+      files: ["src/**/__tests__/*.spec.ts"],
+      env: { jest: true },
+    },
+  ],
   rules: {
     eqeqeq: ["error", "always"],
     "@typescript-eslint/indent": "off",
