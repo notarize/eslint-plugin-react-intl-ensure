@@ -17,7 +17,7 @@ Configure in your eslint config file:
 {
   "plugins": ["@notarize/eslint-plugin-react-intl-ensure"],
   "rules": {
-    "@notarize/eslint-plugin-react-intl-ensure/id-is-valid-uuid": "error"
+    "@notarize/react-intl-ensure/id-is-valid-uuid": "error"
   }
 }
 ```
@@ -27,4 +27,4 @@ Configure in your eslint config file:
 <!-- prettier-ignore -->
 | Name                                                         | Description                                                                                                                        |
 | ---                                                          | ---                                                                                                                                |
-| `@notarize/eslint-plugin-react-intl-ensure/id-is-valid-uuid` | Require that calls to `defineMessages` and `FormattedMessage` have UUID IDs. The `--fix` option will overwrite the ID with a UUID. |
+| `@notarize/react-intl-ensure/id-is-valid-uuid` | Require that calls to `defineMessages` and `FormattedMessage` have UUID IDs. The `--fix` option will overwrite the ID with a UUID. |
