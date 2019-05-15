@@ -15,7 +15,7 @@ Configure in your eslint config file:
 
 ```json
 {
-  "plugins": ["@notarize/eslint-plugin-react-intl-ensure"],
+  "plugins": ["@notarize/react-intl-ensure"],
   "rules": {
     "@notarize/react-intl-ensure/id-is-valid-uuid": "error"
   }
