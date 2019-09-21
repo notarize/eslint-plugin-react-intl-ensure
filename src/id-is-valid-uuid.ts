@@ -103,8 +103,7 @@ const rule: Rule.RuleModule = {
         node: node as Node,
         messageId: "missingId",
         fix(fixer) {
-          // @ts-ignore
-          if (node.type === "JSXOpeningElement") {
+          if ((node.type as string) === "JSXOpeningElement") {
             return fixer.insertTextAfter((node as JSXOpeningElement).name, `\nid=${newIdText()}`);
           } else if (isObjectExpression(node) && node.properties.length) {
             return fixer.insertTextBefore(node.properties[0].key, `id: ${newIdText()},\n`);

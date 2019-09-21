@@ -12,7 +12,7 @@ jest.mock("uuidv4", () => {
   const realModule = jest.requireActual("uuidv4");
   const fakeId = "531b7e94-5447-4f1e-8617-bc61a658ddd5";
   const fake = jest.fn(() => fakeId) as FakeUUIDMod;
-  fake.is = realModule.is;
+  fake.is = realModule.default.is;
   fake.__fakeID = fakeId;
   return fake;
 });

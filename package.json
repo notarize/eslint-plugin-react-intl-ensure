@@ -34,20 +34,19 @@
     "eslint": "^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0"
   },
   "devDependencies": {
-    "@types/eslint": "^4.16.7",
-    "@types/jest": "^24.0.17",
-    "@types/uuidv4": "^2.0.0",
-    "@typescript-eslint/eslint-plugin": "^1.13.0",
-    "@typescript-eslint/parser": "^1.13.0",
-    "eslint": "^6.1.0",
-    "jest": "^24.8.0",
+    "@types/eslint": "^6.1.1",
+    "@types/jest": "^24.0.18",
+    "@typescript-eslint/eslint-plugin": "^2.3.0",
+    "@typescript-eslint/parser": "^2.3.0",
+    "eslint": "^6.4.0",
+    "jest": "^24.9.0",
     "prettier": "^1.18.2",
-    "rollup": "^1.19.4",
-    "rollup-plugin-typescript2": "^0.22.1",
-    "ts-jest": "^24.0.2",
-    "typescript": "^3.5.3"
+    "rollup": "^1.21.4",
+    "rollup-plugin-typescript2": "^0.24.2",
+    "ts-jest": "^24.1.0",
+    "typescript": "^3.6.3"
   },
   "dependencies": {
-    "uuidv4": "^4.0.0"
+    "uuidv4": "^5.0.1"
   }
 }
