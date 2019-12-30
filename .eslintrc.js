@@ -17,6 +17,9 @@ module.exports = {
     {
       files: ["src/**/__tests__/*.spec.ts"],
       env: { jest: true },
+      rules: {
+        "@typescript-eslint/ban-ts-ignore": "off",
+      },
     },
   ],
   rules: {

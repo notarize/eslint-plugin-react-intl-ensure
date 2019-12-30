@@ -1,24 +1,19 @@
-import UUID from "uuidv4";
+// @ts-ignore
+import { __fakeID } from "uuidv4";
 
 import IDIsValidUUID from "../id-is-valid-uuid";
 import { makeRuleTester } from "./util";
 
-interface FakeUUIDMod extends jest.Mock<string> {
-  is: (str: string) => boolean;
-  __fakeID: string;
-}
-
 jest.mock("uuidv4", () => {
   const realModule = jest.requireActual("uuidv4");
   const fakeId = "531b7e94-5447-4f1e-8617-bc61a658ddd5";
-  const fake = jest.fn(() => fakeId) as FakeUUIDMod;
-  fake.is = realModule.default.is;
-  fake.__fakeID = fakeId;
-  return fake;
+  realModule.uuid = jest.fn(() => fakeId);
+  realModule.__fakeID = fakeId;
+  return realModule;
 });
 
 const tester = makeRuleTester();
-const fakeId = ((UUID as unknown) as FakeUUIDMod).__fakeID;
+const fakeId = __fakeID as string;
 
 tester.run("id-is-valid-uuid", IDIsValidUUID, {
   valid: [

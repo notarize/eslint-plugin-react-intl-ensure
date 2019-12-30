@@ -1,6 +1,6 @@
 import { Node, BaseNode, Identifier, CallExpression, Property, ObjectExpression } from "estree";
 import { Rule, Scope } from "eslint";
-import UUID from "uuidv4";
+import { uuid, isUuid } from "uuidv4";
 
 import { isIdentifier, isLiteral, isProperty, isObjectExpression } from "ast";
 
@@ -17,7 +17,7 @@ interface JSXOpeningElement extends BaseNode {
   attributes: JSXAttribute[];
 }
 
-const BASE_UUID_LENGTH = UUID().length;
+const BASE_UUID_LENGTH = uuid().length;
 const JSX_TAGS = Object.freeze(new Set(["FormattedMessage", "FormattedHTMLMessage"]));
 const FUNC_NAMES = Object.freeze(new Set(["defineMessages"]));
 
@@ -54,11 +54,11 @@ function isIntl(
 }
 
 function isValidId(id: unknown): boolean {
-  return typeof id === "string" && id.length === BASE_UUID_LENGTH && UUID.is(id);
+  return typeof id === "string" && id.length === BASE_UUID_LENGTH && isUuid(id);
 }
 
 function newIdText(): string {
-  return `"${UUID()}"`;
+  return `"${uuid()}"`;
 }
 
 function messageIdProperty({ properties }: ObjectExpression): Property | undefined {
