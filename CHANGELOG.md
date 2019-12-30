@@ -1,3 +1,9 @@
+## [1.3.0](https://github.com/notarize/eslint-plugin-react-intl-ensure/compare/v1.2.0...v1.3.0)
+
+### Chore
+
+- Upgrade deps
+
 ## [1.2.0](https://github.com/notarize/eslint-plugin-react-intl-ensure/compare/v1.1.1...v1.2.0)
 
 ### Chore
