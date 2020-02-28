@@ -10,7 +10,7 @@ commands:
 executors:
   default_node_env:
     docker:
-      - image: notarize/node:10.14.0
+      - image: notarize/node:12.16.1
     working_directory: /root/eslint-plugin-react-intl-ensure
 
 jobs:
