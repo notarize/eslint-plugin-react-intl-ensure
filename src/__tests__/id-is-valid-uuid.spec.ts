@@ -137,6 +137,19 @@ tester.run("id-is-valid-uuid", IDIsValidUUID, {
           },
         });
       `,
+      output: `
+        import { FormattedMessage as FM, defineMessages as DM } from "react-intl";
+
+        <FM
+          id="${fakeId}"
+        />;
+
+        DM({
+          one: {
+            id: "${fakeId}"
+          },
+        });
+      `,
       errors: [
         {
           message: "Message ID 'something is not quite right' does not conform.",
@@ -160,6 +173,20 @@ tester.run("id-is-valid-uuid", IDIsValidUUID, {
         defineMessages({
           one: {
             id: "something is not quite right 2"
+          },
+        });
+      `,
+      output: `
+        import { FormattedMessage } from "another-intl";
+        import { defineMessages } from "react-intl";
+
+        <FormattedMessage
+          id="${fakeId}"
+        />;
+
+        defineMessages({
+          one: {
+            id: "${fakeId}"
           },
         });
       `,

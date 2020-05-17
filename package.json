@@ -31,20 +31,20 @@
     "test": "jest"
   },
   "peerDependencies": {
-    "eslint": "^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0"
+    "eslint": "^5.0.0 || ^6.0.0 || ^7.0.0"
   },
   "devDependencies": {
-    "@types/eslint": "^6.8.0",
-    "@types/jest": "^25.2.1",
-    "@typescript-eslint/eslint-plugin": "^2.31.0",
-    "@typescript-eslint/parser": "^2.31.0",
-    "eslint": "^6.8.0",
+    "@types/eslint": "^6.8.1",
+    "@types/jest": "^25.2.2",
+    "@typescript-eslint/eslint-plugin": "^2.33.0",
+    "@typescript-eslint/parser": "^2.33.0",
+    "eslint": "^7.0.0",
     "jest": "^26.0.1",
     "prettier": "^2.0.5",
-    "rollup": "^2.7.6",
-    "rollup-plugin-typescript2": "^0.27.0",
-    "ts-jest": "^25.4.0",
-    "typescript": "^3.8.3"
+    "rollup": "^2.10.2",
+    "rollup-plugin-typescript2": "^0.27.1",
+    "ts-jest": "^26.0.0",
+    "typescript": "^3.9.2"
   },
   "dependencies": {
     "uuidv4": "^6.0.8"
