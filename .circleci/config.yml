@@ -12,6 +12,7 @@ executors:
     docker:
       - image: notarize/node-ci:12.16.1
     working_directory: /root/eslint-plugin-react-intl-ensure
+    resource_class: small
 
 jobs:
   build_working_directory:
