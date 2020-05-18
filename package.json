@@ -1,6 +1,6 @@
 {
   "name": "@notarize/eslint-plugin-react-intl-ensure",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "author": "Notarize Inc.",
   "license": "MIT",
   "description": "Rules for managing react intl translations",
