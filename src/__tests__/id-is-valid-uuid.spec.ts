@@ -1,4 +1,4 @@
-// @ts-ignore
+// @ts-expect-error -- this is a mock import
 import { __fakeID } from "uuidv4";
 
 import IDIsValidUUID from "../id-is-valid-uuid";

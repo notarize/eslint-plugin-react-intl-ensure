@@ -64,7 +64,7 @@ function newIdText(): string {
 function messageIdProperty({ properties }: ObjectExpression): Property | undefined {
   return properties.find(
     (prop) => isProperty(prop) && isIdentifier(prop.key) && prop.key.name === "id",
-  );
+  ) as Property | undefined;
 }
 
 const rule: Rule.RuleModule = {
@@ -106,7 +106,10 @@ const rule: Rule.RuleModule = {
           if ((node.type as string) === "JSXOpeningElement") {
             return fixer.insertTextAfter((node as JSXOpeningElement).name, `\nid=${newIdText()}`);
           } else if (isObjectExpression(node) && node.properties.length) {
-            return fixer.insertTextBefore(node.properties[0].key, `id: ${newIdText()},\n`);
+            return fixer.insertTextBefore(
+              (node.properties[0] as Property).key,
+              `id: ${newIdText()},\n`,
+            );
           } else if (isObjectExpression(node)) {
             return fixer.replaceText(node, `{\nid: ${newIdText()},\n}`);
           }
@@ -140,7 +143,7 @@ const rule: Rule.RuleModule = {
 
         const messages = firstArg.properties
           .filter((property) => isProperty(property) && isObjectExpression(property.value))
-          .map((property) => property.value as ObjectExpression);
+          .map((property) => (property as Property).value as ObjectExpression);
 
         // Messages with IDs
         const idProps = messages.map(messageIdProperty).filter(Boolean);
