@@ -98,7 +98,7 @@ workflows:
             tags:
               only: /^v.*/
             branches:
-              ignore: master
+              ignore: main
 
       - produce_built_lib:
           requires:
@@ -107,7 +107,7 @@ workflows:
             tags:
               only: /^v.*/
             branches:
-              ignore: master
+              ignore: main
 
       - lint:
           requires:
@@ -116,7 +116,7 @@ workflows:
             tags:
               only: /^v.*/
             branches:
-              ignore: master
+              ignore: main
 
       - format:
           requires:
@@ -125,7 +125,7 @@ workflows:
             tags:
               only: /^v.*/
             branches:
-              ignore: master
+              ignore: main
 
       - test:
           requires:
@@ -134,7 +134,7 @@ workflows:
             tags:
               only: /^v.*/
             branches:
-              ignore: master
+              ignore: main
 
       - publish:
           requires:
